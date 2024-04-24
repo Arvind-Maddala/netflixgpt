@@ -1,15 +1,22 @@
 # Netflix GPT
 
 - Used CRA
-- configured Tailwind CSS
+- Tailwind CSS
+- React router
+- useState, useRef, useEffect
+- Firebase Authentication
+- Created Redux store to store user's Data
+- Update profile with the display name
+- Fetch from TMDB
 
 # Features
 
 -Login/Sign up
 
-- Sign in
+- Sign in form
 - Sign up form
 - re direct to home
+- form validation
 
 - Browse ( after authentication)
   - Header

@@ -1,11 +1,84 @@
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const nameRef = useRef(null);
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
   };
+  const dispatch = useDispatch();
+
+  const handleBtnClick = () => {
+    const message = checkValidData(
+      emailRef?.current?.value,
+      passwordRef?.current?.value
+    );
+
+    setErrorMessage(message);
+    if (message) return;
+
+    if (!isSignInForm) {
+      //Sign up logic
+      createUserWithEmailAndPassword(
+        auth,
+        emailRef?.current?.value,
+        passwordRef?.current?.value
+      )
+        .then((userCredential) => {
+          // update display name
+          updateProfile(auth.currentUser, {
+            displayName: nameRef?.current?.value,
+          })
+            .then(() => {
+              const { uid, email, displayName } = auth.currentUser;
+              dispatch(addUser({ uid, email, displayName }));
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      //sign In Logic
+
+      signInWithEmailAndPassword(
+        auth,
+        emailRef?.current?.value,
+        passwordRef?.current?.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
+  };
+
   return (
     <div className="container">
       <Header />
@@ -18,10 +91,10 @@ const Login = () => {
             src="https://assets.nflxext.com/ffe/siteui/vlv3/9f46b569-aff7-4975-9b8e-3212e4637f16/9a12affd-2dc5-4854-90f7-04e28b66f417/US-en-20240415-popsignuptwoweeks-perspective_alpha_website_small.jpg"
             className="h-screen object-cover w-screen"
           />
-          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="absolute inset-0 bg-black opacity-75"></div>
           <p
             className={`absolute text-center ${
-              isSignInForm ? "bottom-1" : "bottom-8"
+              isSignInForm ? "bottom-8" : "bottom-1"
             } left-0 right-0 mx-auto z-100 text-white shadow-2xl`}
           >
             {" "}
@@ -29,34 +102,43 @@ const Login = () => {
           </p>
         </div>
       </div>
-      <form className=" w-2/6 absolute mx-auto right-0 left-0 my-24 p-12 bg-black text-white bg-opacity-70">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className=" w-2/6 absolute mx-auto right-0 left-0 my-24 p-12 bg-black text-white bg-opacity-50"
+      >
         <h2 className="text-3xl mb-5 font-bold">
           {" "}
           {isSignInForm ? "Sign In" : "Sign Up"}{" "}
         </h2>
-        {isSignInForm && (
+        {!isSignInForm && (
           <input
             type="text"
             placeholder="Name"
             className="p-4 my-4 w-full rounded-sm bg-transparent border border-gray-300"
+            ref={nameRef}
           />
         )}
         <input
-          type="text"
+          type="email"
           placeholder="Email address"
           className="p-4 my-4 w-full rounded-sm bg-transparent border border-gray-300"
+          ref={emailRef}
         />
         <input
-          type="text"
+          type="password"
           placeholder="Password"
           className="p-4 my-4 w-full rounded-sm bg-transparent border border-gray-300"
+          ref={passwordRef}
         />
-
-        <button className="p-4 bg-red-700 w-full my-4 font-semibold rounded-sm text-center">
+        <p className="text-red-600 font-semibold"> {errorMessage}</p>
+        <button
+          onClick={handleBtnClick}
+          className="p-4 bg-red-700 w-full my-4 font-semibold rounded-sm text-center"
+        >
           {" "}
           {isSignInForm ? "Sign In" : "Sign Up"}{" "}
         </button>
-        <p className="p-4 cursor-pointer" onClick={toggleSignInForm}>
+        <button className="p-4 cursor-pointer" onClick={toggleSignInForm}>
           {isSignInForm ? (
             <p className="font-semibold">
               {" "}
@@ -72,7 +154,7 @@ const Login = () => {
               Sign in Now.
             </p>
           )}
-        </p>
+        </button>
       </form>
     </div>
   );
