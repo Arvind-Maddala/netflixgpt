@@ -1,12 +1,17 @@
-import { signOut } from "firebase/auth";
-import React from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import React, { useEffect } from "react";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, removeUser } from "../utils/userSlice";
+import { netflixLogo, userLogo } from "../utils/constant";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const user = useSelector((store) => store.user);
+
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -16,21 +21,33 @@ const Header = () => {
         navigate("/error");
       });
   };
+
+  useEffect(() => {
+    // The reason the Firebase onAuthStateChanged method still works is that, internally, it sets up its own listeners and manages them. When you call onAuthStateChanged, you're essentially telling Firebase to start listening for authentication state changes, and it handles the mechanics of registering the listener internally.
+    // Here the onAuthStateChanged works automatically without calling.
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName } = user;
+        dispatch(addUser({ uid, email, displayName }));
+        navigate("/browse");
+      } else {
+        // user Signed out
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    // clean up function
+    return () => unsubscribe();
+  }, []);
+  //
   return (
-    <div className="absolute z-10 py-2 w-screen flex justify-between px-10">
-      <img
-        src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        alt="netflix"
-        className="w-48"
-      />
+    <div className="absolute z-10 py-2 w-full flex justify-between px-16 text-white bg-gradient-to-b from-black to-transparent">
+      <img src={netflixLogo} alt="netflix" className="w-48" />
       {user && (
         <div className="flex items-center">
           <p className="text-lg mr-2">Welcome {user?.displayName} !</p>
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe8eIW8UaYc7fD5QyVa_Z39U07KJzGel20cRbqsURLvQ&s"
-            alt="user"
-            className="w-12 h-12"
-          />
+          <img src={userLogo} alt="user" className="w-12 h-12" />
           <button className="ml-2" onClick={handleSignOut}>
             {" "}
             Sign out
