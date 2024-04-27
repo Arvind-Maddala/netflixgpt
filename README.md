@@ -7,7 +7,8 @@
 - Firebase Authentication
 - Created Redux store to store user's Data
 - Update profile with the display name
-- Fetch from TMDB
+- Fetch Movies from TMDB
+- GPT Search Feature
 
 # Features
 

@@ -5,12 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
 import { netflixLogo, userLogo } from "../utils/constant";
+import { toggleGPTSearch } from "../utils/gptSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const user = useSelector((store) => store.user);
+
+  const handleGptSearchClick = () => {
+    dispatch(toggleGPTSearch());
+  };
 
   const handleSignOut = () => {
     signOut(auth)
@@ -46,7 +51,30 @@ const Header = () => {
       <img src={netflixLogo} alt="netflix" className="w-48" />
       {user && (
         <div className="flex items-center">
-          <p className="text-lg mr-2">Welcome {user?.displayName} !</p>
+          <div className="">
+            <button
+              className="flex items-center text white mr-4 rounded-lg "
+              onClick={handleGptSearchClick}
+            >
+              {" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+              </svg>
+              GPT Search
+            </button>
+          </div>
+          <p className="text-lg mr-2"> Hello {user?.displayName} !</p>
           <img src={userLogo} alt="user" className="w-12 h-12" />
           <button className="ml-2" onClick={handleSignOut}>
             {" "}
