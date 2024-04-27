@@ -4,8 +4,9 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
-import { netflixLogo, userLogo } from "../utils/constant";
+import { netflixLogo, supported_languages, userLogo } from "../utils/constant";
 import { toggleGPTSearch } from "../utils/gptSlice";
+import { changeLang } from "../utils/langSlice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -25,6 +26,10 @@ const Header = () => {
       .catch((error) => {
         navigate("/error");
       });
+  };
+
+  const handleLangSelect = (e) => {
+    dispatch(changeLang(e.target.value));
   };
 
   useEffect(() => {
@@ -51,7 +56,7 @@ const Header = () => {
       <img src={netflixLogo} alt="netflix" className="w-48" />
       {user && (
         <div className="flex items-center">
-          <div className="">
+          <div>
             <button
               className="flex items-center text white mr-4 rounded-lg "
               onClick={handleGptSearchClick}
@@ -80,6 +85,18 @@ const Header = () => {
             {" "}
             Sign out
           </button>
+          <div>
+            <select
+              className="text-black outline-none px-2 py-1 cursor-pointer ml-4"
+              onChange={handleLangSelect}
+            >
+              {supported_languages?.map((item) => (
+                <option value={item.identifier} key={item.identifier}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       )}
     </div>

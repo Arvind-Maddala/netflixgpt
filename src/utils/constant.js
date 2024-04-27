@@ -17,3 +17,12 @@ export const API_Options = {
 export const ytVideoURL = "https://www.youtube.com/embed/";
 
 export const posterURL = "https://image.tmdb.org/t/p/w300/";
+
+export const supported_languages = [
+  { identifier: "english", name: "English" },
+  { identifier: "hindi", name: "Hindi" },
+  { identifier: "telugu", name: "Telugu" },
+  { identifier: "tamil", name: "Tamil" },
+  { identifier: "malyalam", name: "Malyalam" },
+  { identifier: "kannada", name: "Kannada" },
+];

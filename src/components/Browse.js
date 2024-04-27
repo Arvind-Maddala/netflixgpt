@@ -8,6 +8,7 @@ import useTopRatedMovies from "../hooks/useTopRatedMovies";
 import useUpComingMovies from "../hooks/useUpcomingMovies";
 import GptSearch from "./GptSearch";
 import { useSelector } from "react-redux";
+import { LoginBG } from "../utils/constant";
 
 const Browse = () => {
   const showSearchView = useSelector((store) => store.gpt.showSearch);
@@ -22,8 +23,11 @@ const Browse = () => {
           <Header />
         </div>
         {showSearchView ? (
-          <div className="w-full absolute top-20">
-            <GptSearch />
+          <div className="w-full absolute top-24">
+            <img src={LoginBG} alt="background" />
+            <div className="absolute top-[10%]   left-[13%] w-2/3">
+              <GptSearch />
+            </div>
           </div>
         ) : (
           <>
