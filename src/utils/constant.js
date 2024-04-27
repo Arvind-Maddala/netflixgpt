@@ -16,3 +16,4 @@ export const API_Options = {
 
 export const ytVideoURL = "https://www.youtube.com/embed/";
 
+export const posterURL = "https://image.tmdb.org/t/p/w300/";

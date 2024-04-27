@@ -40,9 +40,9 @@ const Header = () => {
     // clean up function
     return () => unsubscribe();
   }, []);
-  //
+  // bg-gradient-to-b from-black to-transparent
   return (
-    <div className="absolute z-10 py-2 w-full flex justify-between px-16 text-white bg-gradient-to-b from-black to-transparent">
+    <div className="w-full py-2 flex justify-between px-16 text-white bg-black">
       <img src={netflixLogo} alt="netflix" className="w-48" />
       {user && (
         <div className="flex items-center">

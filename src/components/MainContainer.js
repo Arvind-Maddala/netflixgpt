@@ -9,9 +9,11 @@ const MainContainer = () => {
   const mainMovie = movies[0];
   const { original_title, overview, id } = mainMovie;
   return (
-    <div>
-      <VideoTitle title={original_title} overview={overview} />
+    <div className="">
       <VideoBG movieId={id} />
+      <div className="absolute top-80 w-1/3">
+        <VideoTitle title={original_title} overview={overview} />
+      </div>
     </div>
   );
 };

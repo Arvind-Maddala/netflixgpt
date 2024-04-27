@@ -10,11 +10,13 @@ const VideoBG = ({ movieId }) => {
   return (
     <div>
       <iframe
-        className="w-full aspect-video absolute top-0"
-        src={ytVideoURL + `${trailer}` + "?&autoplay=1&mute=1"}
+        className="w-full aspect-video"
+        src={
+          ytVideoURL +
+          `${trailer}` +
+          "?&autoplay=1&controls=0&loop=1&rel=0&modestbranding=1"
+        }
         title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        frameborder="0"
       ></iframe>
     </div>
   );
